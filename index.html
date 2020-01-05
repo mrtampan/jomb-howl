@@ -1,0 +1,126 @@
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.min.js"></script>
+</head>
+<body>
+<div id="titleMusic" style="font-size:large; margin-bottom: 20px;"></div>
+<div style="display:flex;">
+<button id="prevPlay">Previous</button>
+<button id="playPause">Play</button>
+<button id="nextPlay">Next</button>
+</div>
+</body>
+<script>
+var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn;
+	
+	// Set Object References
+	playBtn = document.getElementById("playPause");
+	titlePlay = document.getElementById("titleMusic");
+	nextBtn = document.getElementById("nextPlay");
+	prevBtn = document.getElementById("prevPlay");
+
+	// Music Object
+	gfriend = ['fever'];
+	twice = ['candypop'];
+	playList = twice.concat(gfriend);
+	playIndex = 0;
+	titlePlay.innerText = playList[playIndex];
+	
+	// Setting Audio Player
+	extension = '.mp3'
+	sound = new Howl({
+	src: [playList[playIndex]+ extension]
+	});
+
+	
+	// Event Listener Object
+	playBtn.addEventListener("click", playPause);
+	nextBtn.addEventListener("click",  nextPlay);
+	prevBtn.addEventListener("click", prevPlay);
+	
+	
+	// Functional
+	function playPause(){
+		if(sound.playing() === false){
+			sound.play();
+			playBtn.innerText = "Pause";
+		} else {
+			sound.pause();
+			playBtn.innerText = "Play";
+			console.log(sound.pause());
+		}
+	}
+	
+	function changeTitle() {
+		titlePlay.innerText = playList[playIndex];
+	}
+	
+	function prevPlay() {
+		sound.unload();
+		if( playIndex < 0 ){
+			playIndex = 0;
+			sound.changeSrc(playList[playIndex]+ extension);
+			changeTitle();
+			sound.load();
+			sound.play();
+		}else {
+			sound.changeSrc(playList[playIndex-1]+ extension);
+			playIndex = playIndex - 1;
+			changeTitle();
+			console.log(playIndex);
+			sound.load();
+			sound.play();
+		}
+	}
+	
+	function nextPlay() {
+		sound.unload();
+		if( playIndex >= playList.length - 1 ){
+			playIndex = 0;
+			sound.changeSrc(playList[playIndex]+ extension);
+			changeTitle();
+			sound.load();
+			sound.play();
+		}else {
+			sound.changeSrc(playList[playIndex+1]+ extension);
+			playIndex = playIndex + 1;
+			changeTitle();
+			console.log(playIndex);
+			sound.load();
+			sound.play();
+		}
+
+		console.log(playIndex);
+		console.log((playList.length - 1));
+		console.log(sound.state());
+
+	}
+	
+	Howl.prototype.changeSrc = function(str) {
+		this._src = str;
+	}
+	
+	sound.on('end', function(){
+		console.log('Finished!');
+		sound.unload();
+		if(playIndex >= (playList.length - 1) ){
+			playIndex = 0;
+			sound.changeSrc(playList[playIndex]+ extension);
+		}else {
+			sound.changeSrc(playList[playIndex+1]+ extension);
+			playIndex = playIndex + 1;
+		}
+		changeTitle();
+		sound.load();
+		sound.play();
+		console.log(playIndex);
+		});
+	
+
+console.log(sound.playing());	
+console.log(sound);
+console.log(sound._src);
+</script>
+</html>
