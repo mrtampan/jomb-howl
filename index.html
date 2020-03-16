@@ -7,21 +7,30 @@
 </head>
 <body>
 <div id="titleMusic" style="font-size:x-large; margin-bottom: 20px;"></div>
+<select id="chooseMusic"></select>
+<br></br>
 <div style="display:flex;">
 <button id="prevPlay">Previous</button>
 <button id="playPause">Play</button>
 <button id="nextPlay">Next</button>
 </div>
+<div>
+    <p>Play Mode</p>
+    <input type="radio" name="modeS" value="0" checked="checked"/>NormalSwitch
+    <input type="radio" name="modeS" value="1" />RandomSwitch
+</div>
 </body>
 <script>
-var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn;
+var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn, selectMusic, modeSwitch;
 	
 	// Set Object References
 	playBtn = document.getElementById("playPause");
 	titlePlay = document.getElementById("titleMusic");
 	nextBtn = document.getElementById("nextPlay");
 	prevBtn = document.getElementById("prevPlay");
-
+	selectMusic = document.getElementById("chooseMusic");
+	modeSwitch = document.getElementsByName("modeS");
+	
 	// Music Object
 	gfriend = ['fever'];
 	twice = ['candypop'];
@@ -37,17 +46,46 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn;
 	playBtn.addEventListener("click", playPause);
 	nextBtn.addEventListener("click",  nextPlay);
 	prevBtn.addEventListener("click", prevPlay);
+	selectMusic.addEventListener("change", chooseMusic);
 	
+	var df = document.createDocumentFragment();
+	for(let i = 0; i < playList.length ; i++){
+	   let option = document.createElement('option');
+       option.value = playList[i];
+       option.appendChild(document.createTextNode(playList[i]));
+       df.appendChild(option);
+	}
+	selectMusic.appendChild(df);
+	
+	var playModeValue = 0;
+	for(let j = 0; j < modeSwitch.length ; j++){
+	    modeSwitch[j].addEventListener("change", function() {
+	        if(this == null){
+	            playModeValue = 0;
+	        }
+	        playModeValue = this.value;
+	    })
+	}
+	console.log(playModeValue);
 	
 	// Functional
 	function playPause(){
 		if(howlerBank[playIndex].playing() === false){
 			howlerBank[playIndex].play();
 			playBtn.innerText = "Pause";
+			console.log(playIndex);
 		} else {
 			howlerBank[playIndex].pause();
 			playBtn.innerText = "Play";
 		}
+	}
+	
+	function chooseMusic () {
+		howlerBank[playIndex].stop();
+		playIndex = selectMusic.selectedIndex;
+		howlerBank[playIndex].play();
+		changeTitle();
+		
 	}
 	
 	function changeTitle() {
@@ -55,13 +93,14 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn;
 	}
 	
 	function prevPlay() {
-		sound.stop();
-		if( playIndex < 0 ){
+		howlerBank[playIndex].stop();
+		if( playIndex == 0 ){
 			playIndex = 0;
 			howlerBank[playIndex].play();
 			changeTitle();
 		}else {
 			playIndex = playIndex - 1;
+			console.log(playIndex);
 			howlerBank[playIndex].play();
 			changeTitle();
 		}
@@ -84,12 +123,20 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn;
 	}
 	
 	var onEnd = function() {
-		if(playIndex >= (playList.length - 1) ){
-			playIndex = 0;
+		if(playModeValue === 1 || playModeValue === "1"){
+			playIndex = Math.floor(Math.random() * (playList.length - 1));
 			howlerBank[playIndex].play();
-		}else {
-			playIndex = playIndex + 1;
-			howlerBank[playIndex].play();
+			changeTitle();
+		}else{
+			if(playIndex >= (playList.length - 1) ){
+				playIndex = 0;
+				howlerBank[playIndex].play();
+				changeTitle();
+			}else {
+				playIndex = playIndex + 1;
+				howlerBank[playIndex].play();
+				changeTitle();
+			}
 		}
 	}
 	
