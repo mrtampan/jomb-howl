@@ -21,7 +21,7 @@
 </div>
 </body>
 <script>
-var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn, selectMusic, modeSwitch;
+var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn, selectMusic, modeSwitch, musicBank;
 	
 	// Set Object References
 	playBtn = document.getElementById("playPause");
@@ -32,14 +32,16 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 	modeSwitch = document.getElementsByName("modeS");
 	
 	// Music Object
-	gfriend = ['fever'];
-	twice = ['candypop'];
-	playList = twice.concat(gfriend);
+
+	// gfriend = ['fever'];
+	// twice = ['candypop'];
+	// playList = twice.concat(gfriend);
 	playIndex = 0;
-	titlePlay.innerText = playList[playIndex];
+	musicBank = 'https://mrtampan.github.io/caem_bank/';
+	// titlePlay.innerText = playList[playIndex];
 	
 	// Setting Audio Player
-	extension = '.mp3';
+	extension = 'mp3';
 	howlerBank = [];
 	
 	// Event Listener Object
@@ -48,14 +50,7 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 	prevBtn.addEventListener("click", prevPlay);
 	selectMusic.addEventListener("change", chooseMusic);
 	
-	var df = document.createDocumentFragment();
-	for(let i = 0; i < playList.length ; i++){
-	   let option = document.createElement('option');
-       option.value = playList[i];
-       option.appendChild(document.createTextNode(playList[i]));
-       df.appendChild(option);
-	}
-	selectMusic.appendChild(df);
+
 	
 	var playModeValue = 0;
 	for(let j = 0; j < modeSwitch.length ; j++){
@@ -69,6 +64,44 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 	console.log(playModeValue);
 	
 	// Functional
+
+	function getDataMusic(){
+		fetch(musicBank + 'data.json', {
+            method: 'GET'
+		})
+		.then((response) => response.json())
+		.then((result) => {
+		
+			playList = result.music;
+
+			console.log(result.music);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+
+
+	}
+
+	function setOptionMusic(){
+		var df = document.createDocumentFragment();
+			console.log(playList);
+			for(let i = 0; i < playList.length ; i++){
+				let option = document.createElement('option');
+				option.value = playList[i].source;
+				option.appendChild(document.createTextNode(playList[i].name));
+				df.appendChild(option);
+			}
+			selectMusic.appendChild(df);	
+	}
+
+	function runHowler(){
+		playList.forEach(function(currentValue, i){
+			howlerBank.push(new Howl({ src:[ musicBank + playList[i].source], format:['mp3'], onend:onEnd, html5: true }));
+		})
+	}
+
+
 	function playPause(){
 		if(howlerBank[playIndex].playing() === false){
 			howlerBank[playIndex].play();
@@ -89,7 +122,7 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 	}
 	
 	function changeTitle() {
-		titlePlay.innerText = playList[playIndex];
+		titlePlay.innerText = playList[playIndex].name;
 	}
 	
 	function prevPlay() {
@@ -139,11 +172,14 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 			}
 		}
 	}
-	
-	playList.forEach(function(currentValue, i){
-	howlerBank.push(new Howl({ src:[playList[i] + extension], onend:onEnd, html5: true }));
-	})
-	
+
+	//Running System
+	getDataMusic();
+	setTimeout(() => {
+		setOptionMusic();
+		titlePlay.innerText = playList[playIndex].name;
+		runHowler();
+	}, 500);
 
 </script>
 </html>
