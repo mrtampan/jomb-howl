@@ -8,9 +8,6 @@ body
 .app-cover
 {
     position: absolute;
-    top: 25%;
-    right: 0;
-    left: 0;
     width: 430px;
     margin: -4px auto;
 }
@@ -140,32 +137,4 @@ input[type="radio"]{
   padding-bottom:10px;
   margin: -4px auto;
   color: #fff;  
-}
-
-@media only screen 
-  and (min-device-width: 180px) 
-  and (max-device-width: 580px)
-  and (-webkit-min-device-pixel-ratio: 2) {
-
-    .app-cover {
-      width: 100%;
-      top: 0;
-    }
-    .select-div {
-      width: 80%;
-    }
-
-
-    .button
-    {
-        padding: 80px;
-    }
-
-    .svgButton
-    {
-      width: 100px;
-      height: 100px;
-    }
-
-
 }
