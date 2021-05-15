@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.core.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
 </head>
 <body>
-<div id="titleMusic" style="font-size:x-large; margin-bottom: 20px;"></div>
-<select id="chooseMusic"></select>
-<br></br>
-<div style="display:flex;">
-<button id="prevPlay">Previous</button>
-<button id="playPause">Play</button>
-<button id="nextPlay">Next</button>
-</div>
-<div>
-    <p>Play Mode</p>
-    <input type="radio" name="modeS" value="0" checked="checked"/>NormalSwitch
-    <input type="radio" name="modeS" value="1" />RandomSwitch
+<div class="app-cover">
+	<div class="player-content">
+		<marquee  id="titleMusic"></marquee >
+		<div class="select-div">
+			<select  id="chooseMusic"></select>
+		</div>
+		<div style="display:flex;">
+
+		<div class="button" id="prevPlay"><img src="https://image.flaticon.com/icons/svg/2284/2284843.svg" width="50" height="50" alt="prev"/></div>
+		<div class="button" id="playPause" ><img src="https://image.flaticon.com/icons/svg/747/747551.svg" width="50" height="50" alt="play" /></div>
+		<div class="button" id="nextPlay"><img src="https://image.flaticon.com/icons/svg/2284/2284768.svg" width="50" height="50" alt="next" /></div>
+		</div>
+		<div class="wrap-radio">
+			<input type="radio" name="modeS" value="0" id="option-1" checked>
+			<input type="radio" name="modeS" value="1" id="option-2">
+			  <label for="option-1" class="option option-1">
+				 <span>NormalSwitch</span>
+				 </label>
+			  <label for="option-2" class="option option-2">
+				 <span>RandomSwitch</span>
+			  </label>
+		   </div>
+		<br></br>
+	</div>
 </div>
 </body>
 <script>
+
+var slimSelectKu = new SlimSelect({
+  select: '#chooseMusic'
+})
+
 var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn, selectMusic, modeSwitch, musicBank;
 	
 	// Set Object References
@@ -92,24 +112,25 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 				option.appendChild(document.createTextNode(playList[i].name));
 				df.appendChild(option);
 			}
-			selectMusic.appendChild(df);	
+			selectMusic.appendChild(df);
 	}
 
 	function runHowler(){
 		playList.forEach(function(currentValue, i){
 			howlerBank.push(new Howl({ src:[ musicBank + playList[i].source], format:['mp3'], onend:onEnd, html5: true }));
 		})
+
 	}
 
 
 	function playPause(){
 		if(howlerBank[playIndex].playing() === false){
 			howlerBank[playIndex].play();
-			playBtn.innerText = "Pause";
+			playBtn.children[0].src = "https://image.flaticon.com/icons/svg/747/747553.svg";
 			console.log(playIndex);
 		} else {
 			howlerBank[playIndex].pause();
-			playBtn.innerText = "Play";
+			playBtn.children[0].src = "https://image.flaticon.com/icons/svg/747/747551.svg";
 		}
 	}
 	
@@ -122,6 +143,7 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 	}
 	
 	function changeTitle() {
+		document.title = playList[playIndex].name;
 		titlePlay.innerText = playList[playIndex].name;
 	}
 	
@@ -177,7 +199,7 @@ var playBtn, playList, playIndex, extension, sound, titlePlay, nextBtn, prevBtn,
 	getDataMusic();
 	setTimeout(() => {
 		setOptionMusic();
-		titlePlay.innerText = playList[playIndex].name;
+		changeTitle();
 		runHowler();
 	}, 500);
 
