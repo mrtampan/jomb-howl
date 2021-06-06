@@ -3,6 +3,12 @@
 Audio Player berbasis website, tujuan dibuat nya audio player ini untuk yang ingin masih mendengarkan mp3 dan ingin punya audio player sendiri. 
 
 
+## DEMO
+Audio Player: https://mrtampan.github.io/jomb-howl/
+Music List: https://mrtampan.github.io/caem_bank/data.json
+
+
+
 ## Running Local Server in terminal/cmd
 
 ```bash
