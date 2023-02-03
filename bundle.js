@@ -2030,11 +2030,10 @@
   function playPause() {
     if (howlerBank[playIndex].playing() === false) {
       howlerBank[playIndex].play();
-      playBtn.children[0].src = "https://image.flaticon.com/icons/svg/747/747553.svg";
-      console.log(playIndex);
+      playBtn.innerText = "Pause";
     } else {
       howlerBank[playIndex].pause();
-      playBtn.children[0].src = "https://image.flaticon.com/icons/svg/747/747551.svg";
+      playBtn.innerText = "Play";
     }
   }
   function chooseMusic() {
