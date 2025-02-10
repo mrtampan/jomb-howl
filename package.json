@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "alpinejs": "^3.9.3",
-    "esbuild": "^0.14.27",
+    "esbuild": "^0.25.0",
     "howler": "^2.2.3"
   }
 }
